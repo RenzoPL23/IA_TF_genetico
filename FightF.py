@@ -50,7 +50,7 @@ class Fighter:
         if (self.progreso_golpe >= 1.2):
             self.movimientoG = self.movimientoG * -1
 
-    def kick(self):
+    def kicks(self):
         self.progreso_patada +=self.movimientoP
         if (self.progreso_patada<= 0.5):
             self.movimientoP = 0.0
@@ -224,7 +224,7 @@ def displayW(screen):
     fighter_1 = Fighter(postX1, postY1,1)
     fighter_2 = Fighter(postX2, postY2,-1)
 
-    fighters=[Fighter(postX1, postY2),Fighter(postX1, postY2),Fighter(postX1, postY2),Fighter(postX1, postY2),Fighter(postX1, postY2),Fighter(postX1, postY2)]
+    fighters=[Fighter(postX1, postY2,-1),Fighter(postX1, postY2,-1),Fighter(postX1, postY2,-1),Fighter(postX1, postY2,-1),Fighter(postX1, postY2,-1),Fighter(postX1, postY2,-1)]
     for i in fighters:
         i.resetAll()
         print(i.kick)
@@ -240,7 +240,7 @@ def displayW(screen):
         fighter_1.crear(screen)
         fighter_2.crear(screen)
         fighter_1.punch()
-        fighter_1.kick()
+        fighter_1.kicks()
         fighter_1.PararseEn()
         mallaW(screen)
         if(fighter_1.getX()<=0):
