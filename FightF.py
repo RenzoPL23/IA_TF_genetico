@@ -69,22 +69,22 @@ class Fighter:
     
     def reset(self,reseteando):
         probabilidadRestante=100
-        print(0)
-        for i in range(len(reseteando)):
-            if(probabilidadRestante<=50):
-                reseteando[i]=rnd.randint(0,probabilidadRestante)/100
+        for i in range(len(reseteando)-1):
+            if(probabilidadRestante>=60):
+                reseteando[i]=rnd.randint(0,40)/100
             else:
-                reseteando[i]=rnd.randint(0,50)/100
-            probabilidadRestante-=reseteando[i]
-            
+                if(probabilidadRestante>=40):
+                    reseteando[i]=rnd.randint(0,40)/100
+                else:
+                    reseteando[i]=rnd.randint(0,probabilidadRestante)/100
+            probabilidadRestante-=int(reseteando[i]*100)
+        if(probabilidadRestante>0):
+            reseteando[-1]=probabilidadRestante/100    
+        else:
+            reseteando=0.0
         return
     def resetAll(self):
         self.reset(self.kick)
-        self.reset(self.punsh)
-        self.reset(self.avanza)
-        self.reset(self.retrocede)
-        self.reset(self.agacha)
-        self.reset(self.nada)
         return
         
 
@@ -114,6 +114,51 @@ def mallaW(window):
         pygame.draw.line(window, red, (scale * i, 0), (scale * i, scale * 12))
         pygame.draw.line(window, red, (0, scale * i), (scale * 18, scale * i))
 
+def Parejas(N):
+        Aleatorio = rnd.sample(range(int(N/2),N),int(N/2))
+        Pareja = {}
+        for i in range(int(N/2)):
+            Pareja[i] = Aleatorio[i]
+            Pareja[Aleatorio[i]] = i
+        return Pareja
+def Seleccion(luchadores):
+    print('---Seleccion----')
+    Pareja = Parejas(len(luchadores[0].kick))
+    print('Parejas',Pareja)
+    for k,v in Pareja.items():
+        if Idoneidad(luchadores[k]) >= Idoneidad(luchadores[v]):
+            luchadores[v] = luchadores[k]
+def Idoneidad(luchador):
+    return (luchador.kick[0])
+
+def Cruce(luchadores):
+    print('-----Cruce ------')
+    N=len(luchadores[0].kick)
+    Pareja = Parejas(N)
+    print('Parejas',Pareja)
+    item = 0
+    for k,v in Pareja.items():
+        if item % 2 == 0:
+            luchadores[k].kick,luchadores[v].kick=CruceIndividual(N,luchadores[k].kick,luchadores[v].kick)
+            print(luchadores[k].kick)
+        item = item+1
+
+def CruceIndividual(N,movimiento1, movimiento2):
+    Punto = rnd.randint(1,N-2)
+    Hijo1 = []
+    Hijo2 = []
+    Padre1 = movimiento1
+    Padre2 = movimiento2
+    Hijo1.extend(Padre1[0:Punto])
+    Hijo1.extend(Padre2[Punto:])
+    Hijo2.extend(Padre2[0:Punto])
+    Hijo2.extend(Padre1[Punto:])
+    movimiento1 = Hijo1
+    print(movimiento1)
+    movimiento2 = Hijo2
+    return movimiento1,movimiento2
+
+
 
 def displayW(screen):
     black = (0, 0, 0)
@@ -124,11 +169,19 @@ def displayW(screen):
     postX2 = 9
     postY2 = 8
     parado = True
+    fighters=[Fighter(postX1, postY2),Fighter(postX1, postY2),Fighter(postX1, postY2),Fighter(postX1, postY2),Fighter(postX1, postY2),Fighter(postX1, postY2)]
+    for i in fighters:
+        i.resetAll()
+        print(i.kick)
+    Seleccion(fighters)
+    for i in fighters:
+        print(i.kick)
+    Cruce(fighters)
+   # for i in fighters:
+    #    print(i.kick)
     fighter_1 = Fighter(postX1, postY1)
     fighter_1.resetAll()
     fighter_2 = Fighter(postX1, postY2)
-    print(len(fighter_1.agacha))
-    print(fighter_1.kick)
     while True:
         screen.fill(black)
         screen.blit(scenerescale, (0, 0))
